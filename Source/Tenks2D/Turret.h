@@ -29,4 +29,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Turret, meta = (AllowPrivateAccess = "true"))
 	class UArrowComponent* TurretDirection;
 
+	//Tank body Sprite
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Turret, meta = (AllowPrivateAccess = "true"))
+	class UPaperSpriteComponent* TurretSprite;
+
 };

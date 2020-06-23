@@ -28,13 +28,15 @@ public:
 
 private:
 	
-	//Debug arrow
+	// Debug arrow
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = "true"))
 	class UArrowComponent* TankDirection;
 
-	//Tank body Sprite
+	// Tank body Sprite
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* TankSprite;
 
-	
+	// Turret Actor
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* ChildTurret;
 };

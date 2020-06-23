@@ -23,6 +23,9 @@ ATank::ATank()
 
 	TankSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankSprite"));
 	TankSprite->AttachTo(RootComponent);
+
+	ChildTurret = CreateDefaultSubobject<UChildActorComponent>(TEXT("Turret"));
+	ChildTurret->AttachTo(TankDirection);   // Attaching the turret to the arrow and not the sprite
 }
 
 // Called when the game starts or when spawned

@@ -16,6 +16,8 @@ ATurret::ATurret()
 	TurretDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("TurretDirection"));
 	TurretDirection->AttachTo(RootComponent);
 	
+	TurretSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TurretSprite"));
+	TurretSprite->AttachTo(RootComponent);
 }
 
 // Called when the game starts or when spawned
