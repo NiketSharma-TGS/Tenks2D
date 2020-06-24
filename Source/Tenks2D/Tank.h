@@ -77,11 +77,11 @@ private:
 
 	// Max speed(degrees per seconds) of rotating
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (ClampMin = "0.0"), meta = (AllowPrivateAccess = "true"))
-		float YawSpeed = 180;
+	float YawSpeed = 180;
 
 	// Movement Speed(units/seconds)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (ClampMin = "0.0"), meta = (AllowPrivateAccess = "true"))
-		float MoveSpeed = 100;
+	float MoveSpeed = 100;
 
 	
 protected:
@@ -92,3 +92,4 @@ protected:
 	
 	
 };
+ 
