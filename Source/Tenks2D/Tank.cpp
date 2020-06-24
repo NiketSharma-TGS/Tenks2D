@@ -4,14 +4,15 @@
 #include "Components/ArrowComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Math/UnrealMathUtility.h"
 #include "PaperSpriteComponent.h"
 #include "Tank.h"
 
 void FTankInput::Sanitize()
 {
 	MovementInput = RawMovementInput.ClampAxes(-1.0f, 1.0f);
-	MovementInput.GetSafeNormal();
-	RawMovementInput.Set(0.0f, 0.0f)
+	MovementInput = MovementInput.GetSafeNormal();
+	RawMovementInput.Set(0.0f, 0.0f);
 }
 
 void FTankInput::MoveY(float AxisValue)
@@ -79,6 +80,72 @@ void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	TankInput.Sanitize();
+
+	//Tank Movement
+	{	// Comtaining this in scope here for future and cleanliness ;)
+		FVector DesiredMovementDirection = FVector(TankInput.MovementInput.Y, TankInput.MovementInput.X, 0.0f);
+		if (!DesiredMovementDirection.IsNearlyZero())
+		{
+			// Tank Rotation to add turning radius
+			FRotator MovementAngle = DesiredMovementDirection.Rotation(); // No need to normalize this rotation, input is already sanitized
+			float DeltaYaw = FMath::FindDeltaAngleDegrees(TankDirection->GetComponentRotation().Yaw, MovementAngle.Yaw);
+			bool bReverse = false;
+			if (DeltaYaw != 0.0f)
+			{
+				float AdjustedDeltaYaw = DeltaYaw;
+				if (AdjustedDeltaYaw < -90.0f)
+				{
+					AdjustedDeltaYaw -= 180.0f;
+					bReverse = true;
+				}
+
+				else if (AdjustedDeltaYaw > 90.0f)
+				{
+					AdjustedDeltaYaw -= 180.0f;
+					bReverse = true;
+				}
+			
+				// Turn towards the desired angle, stop if reachable in one frame
+				float MaxYawInFrame = YawSpeed * DeltaTime;
+				if (MaxYawInFrame >= FMath::Abs(AdjustedDeltaYaw))
+				{
+					if (bReverse)
+					{
+						// Reverse movements
+						FRotator FacingAngle = MovementAngle;
+						FacingAngle.Yaw = MovementAngle.Yaw + 180.0f;
+						TankDirection->SetWorldRotation(FacingAngle);
+					}
+
+					else
+					{
+						TankDirection->SetWorldRotation(MovementAngle);
+					}
+
+				}
+				else
+				{
+					// if not reachable in one frame, rotate part way
+					TankDirection->AddLocalRotation(FRotator(0.0f, FMath::Sign(AdjustedDeltaYaw) * MaxYawInFrame, 0.0f)); // Moves only upto MaxYawInFrame
+
+				}
+			
+				
+			}
+
+			// Move the tank	
+			{
+				FVector MovementDirection = TankDirection->GetForwardVector() * (bReverse ? -1.0f : 1.0f);
+				FVector Pos = GetActorLocation();
+				Pos.Y += MovementDirection.Y * MoveSpeed * DeltaTime;
+				Pos.X += MovementDirection.X * MoveSpeed * DeltaTime;
+				SetActorLocation(Pos);
+			}
+		}
+	
+	}
+	
 }
 
 // Key Binds
@@ -97,5 +164,5 @@ void ATank::MoveY(float AxisValue)
 
 void ATank::MoveX(float AxisValue)
 {
-	TankInput.MoveY(AxisValue); 
+	TankInput.MoveX(AxisValue); 
 }

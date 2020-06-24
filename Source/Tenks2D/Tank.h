@@ -7,8 +7,8 @@
 #include "Tank.generated.h"
 
 
-USTRUCT() // Holds all the inputs and cleans them
-struct  FTankInput
+USTRUCT(BlueprintType) // Holds all the inputs and cleans them
+struct FTankInput
 {
 	GENERATED_BODY()
 
@@ -73,12 +73,22 @@ private:
 	// In-game camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* Camera;
+	
 
+	// Max speed(degrees per seconds) of rotating
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (ClampMin = "0.0"), meta = (AllowPrivateAccess = "true"))
+		float YawSpeed = 180;
 
+	// Movement Speed(units/seconds)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (ClampMin = "0.0"), meta = (AllowPrivateAccess = "true"))
+		float MoveSpeed = 100;
+
+	
 protected:
 	
 	// Input Struct
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TankInput, meta = (AllowPrivateAccess = "true"))
 	FTankInput TankInput;
+	
 	
 };
