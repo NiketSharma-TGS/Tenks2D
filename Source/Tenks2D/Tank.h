@@ -6,6 +6,30 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
+
+USTRUCT() // Holds all the inputs and cleans them
+struct  FTankInput
+{
+	GENERATED_BODY()
+
+public:
+// Sanitizing movement speed
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TankInput)
+	
+	FVector2D MovementInput;
+
+	// These can't be UFUNCTIONS because USTRUCT is not an UOBJECT
+	void Sanitize();
+	void MoveY(float AxisValue);
+	void MoveX(float AxisValue);
+
+private:
+	// Internal Raw data hidden from game code
+	FVector2D RawMovementInput;
+};
+
+
 UCLASS()
 class TENKS2D_API ATank : public APawn
 {
@@ -23,8 +47,14 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
+	// Kry Binds
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	
+	void MoveX(float AxisValue);
+	void MoveY(float AxisValue);
+
 
 private:
 	
@@ -45,4 +75,10 @@ private:
 	class UCameraComponent* Camera;
 
 
+protected:
+	
+	// Input Struct
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TankInput, meta = (AllowPrivateAccess = "true"))
+	FTankInput TankInput;
+	
 };

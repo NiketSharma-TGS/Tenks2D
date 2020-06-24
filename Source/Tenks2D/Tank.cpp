@@ -7,6 +7,24 @@
 #include "PaperSpriteComponent.h"
 #include "Tank.h"
 
+void FTankInput::Sanitize()
+{
+	MovementInput = RawMovementInput.ClampAxes(-1.0f, 1.0f);
+	MovementInput.GetSafeNormal();
+	RawMovementInput.Set(0.0f, 0.0f)
+}
+
+void FTankInput::MoveY(float AxisValue)
+{
+	RawMovementInput.Y += AxisValue;
+}
+
+void FTankInput::MoveX(float AxisValue)
+{
+	RawMovementInput.X += AxisValue;
+}
+
+
 
 // Sets default values
 ATank::ATank()
@@ -63,10 +81,21 @@ void ATank::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
+// Key Binds
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis("MoveY", this, &ATank::MoveY);
+	PlayerInputComponent->BindAxis("MoveX", this, &ATank::MoveX);
 }
 
+void ATank::MoveY(float AxisValue)
+{
+	TankInput.MoveY(AxisValue); //Using instance of struct for the sanitized movement data
+}
+
+void ATank::MoveX(float AxisValue)
+{
+	TankInput.MoveY(AxisValue); 
+}
