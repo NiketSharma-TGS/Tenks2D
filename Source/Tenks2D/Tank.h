@@ -7,6 +7,22 @@
 #include "Tank.generated.h"
 
 
+/*USTRUCT() 
+struct AttachmentRules
+{
+	GENERATED_BODY()
+
+public:
+
+	bool bWeldSimulatedBodies = true;
+
+	EAttachmentRule LocationRule;
+	EAttachmentRule RotationtionRule;
+	EAttachmentRule ScaleRule;
+
+};*/
+
+
 USTRUCT(BlueprintType) // Holds all the inputs and cleans them
 struct FTankInput
 {
@@ -54,6 +70,7 @@ private:
 	
 	void MoveX(float AxisValue);
 	void MoveY(float AxisValue);
+
 
 
 private:

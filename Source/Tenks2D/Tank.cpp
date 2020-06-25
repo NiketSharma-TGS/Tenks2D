@@ -42,7 +42,10 @@ ATank::ATank()
 	TankDirection->AttachTo(RootComponent);
 
 	TankSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankSprite"));
-	TankSprite->AttachTo(RootComponent);
+	TankSprite->AttachTo(TankDirection);
+	
+	ChildTurret = CreateDefaultSubobject<UChildActorComponent>(TEXT("Turret"));
+	ChildTurret->AttachTo(TankDirection);   // Attaching the turret to the arrow and not the sprite
 
 	// Making a Spring Arm and editing it's properties
 	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -64,8 +67,7 @@ ATank::ATank()
 	// Socket is at the end of the spring arm, so attaching it there is important
 	Camera->AttachTo(SpringArm, USpringArmComponent::SocketName); 
 
-	ChildTurret = CreateDefaultSubobject<UChildActorComponent>(TEXT("Turret"));
-	ChildTurret->AttachTo(TankDirection);   // Attaching the turret to the arrow and not the sprite
+	
 }
 
 // Called when the game starts or when spawned
@@ -96,7 +98,7 @@ void ATank::Tick(float DeltaTime)
 				float AdjustedDeltaYaw = DeltaYaw;
 				if (AdjustedDeltaYaw < -90.0f)
 				{
-					AdjustedDeltaYaw -= 180.0f;
+					AdjustedDeltaYaw += 180.0f;
 					bReverse = true;
 				}
 
@@ -134,7 +136,7 @@ void ATank::Tick(float DeltaTime)
 				
 			}
 
-			// Move the tank	
+			// Tank Movement-	
 			{
 				FVector MovementDirection = TankDirection->GetForwardVector() * (bReverse ? -1.0f : 1.0f);
 				FVector Pos = GetActorLocation();

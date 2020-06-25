@@ -23,6 +23,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+
+	UPROPERTY(EditAnywhere, CPF_BlueprintReadOnly, Category = "Turret")
+
 private:
 
 	//Debug arrow
