@@ -35,10 +35,19 @@ public:
 	
 	FVector2D MovementInput;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TankInput)
+	bool bFire1; 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TankInput)
+	bool bFire2; 
+
+
 	// These can't be UFUNCTIONS because USTRUCT is not an UOBJECT
 	void Sanitize();
 	void MoveY(float AxisValue);
 	void MoveX(float AxisValue);
+	void Fire1(bool bPressed);
+	void Fire2(bool bPressed);
 
 private:
 	// Internal Raw data hidden from game code
@@ -63,14 +72,21 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 
-	// Kry Binds
+	// Key Binds
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable, Category = Tank)
+
+	const FTankInput& GetCurrentInput() { return TankInput; }
 
 private:
 	
 	void MoveX(float AxisValue);
 	void MoveY(float AxisValue);
-
+	void Fire1Pressed();
+	void Fire1Released();
+	void Fire2Pressed();
+	void Fire2Released();
 
 
 private:

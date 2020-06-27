@@ -7,6 +7,7 @@
 #include "Turret.generated.h"
 
 class ATank;  //Man do I love me some forward declarations
+class AMissile;
 
 UCLASS()
 class TENKS2D_API ATurret : public AActor
@@ -32,6 +33,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret")
 	ATank* Tank;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret")
+		TSubclassOf<AActor> Projectile;
 
 private:
 
