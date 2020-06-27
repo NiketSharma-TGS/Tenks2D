@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Turret.generated.h"
 
+class ATank;  //Man do I love me some forward declarations
+
 UCLASS()
 class TENKS2D_API ATurret : public AActor
 {
@@ -24,8 +26,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
+	// Max. turning rate deg/sec
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret")
+	float YawSpeed;
 
-	UPROPERTY(EditAnywhere, CPF_BlueprintReadOnly, Category = "Turret")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turret")
+	ATank* Tank;
 
 private:
 

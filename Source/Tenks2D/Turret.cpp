@@ -2,6 +2,7 @@
 
 #include "Components/ArrowComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Math/UnrealMathUtility.h"
 #include "PaperSpriteComponent.h"
 #include "Tank.h"
 #include "TankStaticsFunctions.h"
@@ -20,12 +21,17 @@ ATurret::ATurret()
 	
 	TurretSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TurretSprite"));
 	TurretSprite->AttachTo(RootComponent);
+
+	YawSpeed = 180.0f;
 }
 
 // Called when the game starts or when spawned
 void ATurret::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Tank = Cast<ATank>(GetParentComponent()->GetOwner());
+	check(Tank);
 	
 }
 
@@ -35,7 +41,7 @@ void ATurret::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	check(TurretDirection);
-	if (ATank* Tank = Cast<ATank>(ParentComponentActor.Get()))
+	if (Tank != nullptr)
 	{
 		if (APlayerController* PC = Cast<APlayerController>(Tank->GetController()))
 		{
@@ -46,17 +52,30 @@ void ATurret::Tick(float DeltaTime)
 				UGameplayStatics::ProjectWorldToScreen(PC, TurretDirection->GetComponentLocation(), TurretLocation);
 
 				float DesiredYaw;
-				FRotator CurrentRotation = TurretDirection->GetComponentRotation();
+				
 
 				if (UTankStaticsFunctions::FindLookAtAngle2D(TurretLocation, AimLocation, DesiredYaw))
 				{
 
-					CurrentRotation.Yaw = DesiredYaw;
-					TurretDirection->SetWorldRotation(CurrentRotation);
-
+					FRotator CurrentRotation = TurretDirection->GetComponentRotation();
+					float DeltaYaw = FMath::FindDeltaAngleDegrees(CurrentRotation.Yaw, DesiredYaw);
+					float MaxDeltaYawThisFrame = YawSpeed * DeltaTime;
+					if (MaxDeltaYawThisFrame >= FMath::Abs(DesiredYaw))
+					{
+						CurrentRotation.Yaw = DesiredYaw; //As wee can reach there in this frame, just set the final value to it
+					}
+					
+					else
+					{
+						CurrentRotation.Yaw	+= FMath::Sign(DeltaYaw)* MaxDeltaYawThisFrame;
+						TurretDirection->SetWorldRotation(CurrentRotation);
+					}
+						
+					
 				}
 			}
 		}
 	}
 }
+
 
